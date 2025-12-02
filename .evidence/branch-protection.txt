@@ -1,0 +1,38 @@
+## Rama Protegida
+main
+
+## Configuración Aplicada
+
+Pull Request Reviews:
+- Requiere 1 aprobación de Code Owner
+- Descarta aprobaciones obsoletas al pushear nuevos commits
+
+Status Checks:
+- Requiere CI pass (ci.yml, iac_quality.yml)
+- Requiere rama actualizada con main
+
+Restricciones:
+- Requiere resolución de conversaciones
+- Aplica a administradores
+- Solo merge via PR (no push directo)
+- No permite force push
+- No permite delete de rama
+
+## Code Owners
+- @AldoLunaBueno
+- @Jharvichu
+- @AlbeCamp21
+
+## Pasos para Configurar
+
+GitHub Settings → Branches → Add rule → Pattern: main
+
+## Workflow
+
+1. Crear issue
+2. Crear rama (feature/, chore/, hotfix/)
+3. Desarrollar
+4. Push y crear PR (Que, Por que, Como + Closes #X)
+5. Esperar CI pass
+6. Review y aprobación
+7. Merge
