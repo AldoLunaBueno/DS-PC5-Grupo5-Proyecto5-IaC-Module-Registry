@@ -1,1 +1,10 @@
 tmp/
+
+# Entorno
+venv/
+env/
+
+# Cache
+__pycache__
+.pytest_cache
+.ruff_cache
