@@ -5,11 +5,6 @@ on:
     # 1. Escuchamos todos los tipos de eventos que nos interesan
     types: [opened, reopened, ready_for_review, closed]
 
-permissions:
-  contents: read
-  issues: write
-  pull-requests: read
-
 jobs:
   move-project-card:
     runs-on: ubuntu-22.04
