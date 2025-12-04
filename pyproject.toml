@@ -1,0 +1,21 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = ""
+testpaths = [
+    "tests",
+]
+python_files = "test_*.py"
+
+[tool.ruff]
+# Configuración básica para el linter (reemplazo moderno de flake8)
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+# Reglas a activar: E (pycodestyle errors), F (pyflakes), I (isort imports)
+select = ["E", "F", "I"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

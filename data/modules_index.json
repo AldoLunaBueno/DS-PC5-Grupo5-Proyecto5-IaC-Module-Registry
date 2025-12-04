@@ -1,0 +1,29 @@
+[
+  {
+    "id": "mod-001",
+    "name": "example-az",  
+    "type": "terraform",
+    "path": "modules/terraform/example-az", 
+    "version": "1.0.0",
+    "tags": ["azure", "example"],
+    "quality_state": "OK"
+  },
+  {
+    "id": "mod-002",
+    "name": "example-nginx",
+    "type": "k8s",
+    "path": "modules/k8s/example-nginx",
+    "version": "0.1.0",
+    "tags": ["k8s", "nginx"],
+    "quality_state": "WARN"
+  },
+  {
+    "id": "mod-003",
+    "name": "local-docker",
+    "type": "terraform",
+    "path": "modules/terraform/local-docker",
+    "version": "1.0.0",
+    "tags": ["docker", "local"],
+    "quality_state": "FAIL"
+  }
+]
