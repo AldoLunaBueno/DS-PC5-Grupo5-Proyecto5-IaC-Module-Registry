@@ -1,0 +1,7 @@
+name: example-nginx
+version: 1.0.0
+maintainer: developer
+tags:
+  - k8s
+  - nginx
+  - example
