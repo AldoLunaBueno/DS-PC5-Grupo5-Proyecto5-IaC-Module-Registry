@@ -25,5 +25,14 @@
     "version": "1.0.0",
     "tags": ["docker", "local"],
     "quality_state": "FAIL"
+  },
+  {
+    "id": "mod-004",
+    "name": "example-local-",
+    "type": "terraform",
+    "path": "modules/terraform/example-local",
+    "version": "1.0.0",
+    "tags": ["local", "filesystem"],
+    "quality_state": "OK"
   }
 ]
