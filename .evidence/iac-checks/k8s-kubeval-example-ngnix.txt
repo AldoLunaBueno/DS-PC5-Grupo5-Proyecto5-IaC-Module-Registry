@@ -1,0 +1,2 @@
+PASS - modules/k8s/example-ngnix/deployment.yaml contains a valid Deployment (nginx-deployment)
+PASS - modules/k8s/example-ngnix/service.yaml contains a valid Service (nginx-service)
