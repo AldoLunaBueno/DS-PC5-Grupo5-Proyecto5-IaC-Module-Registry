@@ -1,0 +1,6 @@
+kind: metadata
+name: Invalid-Name
+version: 1.0.0
+maintainer: tester
+tags:
+  - invalid
