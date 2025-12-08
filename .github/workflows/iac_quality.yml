@@ -53,16 +53,54 @@ jobs:
         run: |
           mkdir -p .evidence
           
-          if [ -f .evidence/iac-quality-report.json ]; then
-            echo "Reporte generado por el script:"
-            cat .evidence/iac-quality-report.json
-          else
-            echo "Generando reporte básico desde logs..."
-            echo '{
-              "modules": [],
-              "summary": {"ok": 0, "warn": 0, "fail": 0}
-            }' > .evidence/iac-quality-report.json
-          fi
+          echo '{"modules":[],"summary":{"ok":0,"warn":0,"fail":0}}' > .evidence/iac-quality-report.json
+          
+          ok=0
+          warn=0
+          fail=0
+          
+          # Revisar terraform
+          for f in .evidence/iac-checks/tf-validate-*.txt; do
+            [ -f "$f" ] || continue
+            mod=$(basename "$f" .txt | sed 's/tf-validate-//')
+            
+            if grep -qi error "$f"; then
+              status="FAIL"
+              fail=$((fail+1))
+              msg=$(grep -i error "$f" | head -1)
+            else
+              status="OK"
+              ok=$((ok+1))
+              msg="passed"
+            fi
+            
+            jq ".modules += [{\"id\":\"terraform/$mod\",\"type\":\"terraform\",\"result\":\"$status\",\"details\":\"$msg\"}]" \
+              .evidence/iac-quality-report.json > /tmp/report.json && mv /tmp/report.json .evidence/iac-quality-report.json
+          done
+          
+          # Revisar kubernetes
+          for f in .evidence/iac-checks/k8s-kubeval-*.txt; do
+            [ -f "$f" ] || continue
+            mod=$(basename "$f" .txt | sed 's/k8s-kubeval-//')
+            
+            if grep -q invalid "$f"; then
+              status="FAIL"
+              fail=$((fail+1))
+              msg=$(grep invalid "$f" | head -1)
+            else
+              status="OK"
+              ok=$((ok+1))
+              msg="passed"
+            fi
+            
+            jq ".modules += [{\"id\":\"k8s/$mod\",\"type\":\"kubernetes\",\"result\":\"$status\",\"details\":\"$msg\"}]" \
+              .evidence/iac-quality-report.json > /tmp/report.json && mv /tmp/report.json .evidence/iac-quality-report.json
+          done
+          
+          jq ".summary = {\"ok\":$ok,\"warn\":$warn,\"fail\":$fail}" .evidence/iac-quality-report.json > /tmp/report.json
+          mv /tmp/report.json .evidence/iac-quality-report.json
+          
+          cat .evidence/iac-quality-report.json
       
       - name: Subir reporte como artifact
         uses: actions/upload-artifact@v4
