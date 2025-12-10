@@ -1,0 +1,7 @@
+name: example-local
+version: 1.0.0
+maintainer: developer
+tags:
+  - local
+  - filesystem
+  - example
