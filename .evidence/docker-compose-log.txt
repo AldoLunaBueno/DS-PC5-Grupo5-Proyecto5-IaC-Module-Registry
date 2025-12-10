@@ -1,0 +1,27 @@
+Attaching to registry-1
+registry-1  | INFO:     127.0.0.1:43768 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:52606 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:52622 - "GET /modules HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:49926 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:32772 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:52628 - "GET /modules/mode-001 HTTP/1.1" 404 Not Found
+registry-1  | INFO:     172.22.0.1:52628 - "GET /modules/mod-001 HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:56710 - "GET /modules/mod-002 HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:56710 - "GET /modules/mod-003 HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:58432 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     172.22.0.1:51842 - "GET /modules/mod-004 HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:34928 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:40026 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:43870 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:34010 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:46632 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:51466 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:60346 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:44102 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:45312 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:57172 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:55030 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:48604 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:53428 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:60216 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:39732 - "GET /health HTTP/1.1" 200 OK
