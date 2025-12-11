@@ -68,5 +68,39 @@ else
     exit 1;
 fi
 
+# conftest
+if command -v conftest &> /dev/null; then
+    echo "- Ejecutando Conftest..."
+    
+    # Validar metadata.yaml de módulos terraform
+    for dir in "$TERRAFORM_DIR"/*/; do
+        if [ -d "$dir" ] && [ -f "$dir/metadata.yaml" ]; then
+            dirname=$(basename "$dir")
+            echo " Validando metadata: $dirname"
+            conftest test "$dir/metadata.yaml" -p policy/ >> .evidence/conftest-report.txt 2>&1 || true
+        fi
+    done
+    
+    # Validar metadata.yaml de módulos k8s
+    for dir in "$K8S_DIR"/*; do
+        if [ -d "$dir" ] && [ -f "$dir/metadata.yaml" ]; then
+            dirname=$(basename "$dir")
+            echo "  Validando metadata: $dirname"
+            conftest test "$dir/metadata.yaml" -p policy/ >> .evidence/conftest-report.txt 2>&1 || true
+        fi
+    done
+    
+    # Validar archivos K8s
+    for dir in "$K8S_DIR"/*; do
+        if [ -d "$dir" ]; then
+            dirname=$(basename "$dir")
+            echo "  Validando K8s: $dirname"
+            conftest test "$dir"/*.yaml -p policy/ >> .evidence/conftest-report.txt 2>&1 || true
+        fi
+    done
+else
+    echo "Conftest no encontrado. Saltando."
+fi
+
 echo "Validaciones completadas"
 echo "Reportes generados en $EVIDENCE_DIR"
