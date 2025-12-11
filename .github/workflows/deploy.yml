@@ -1,0 +1,60 @@
+name: Deploy + Smoke Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar calidad IaC como prerequisito
+        run: |
+          chmod +x tools/run_iac_checks.sh
+          tools/run_iac_checks.sh 2>&1 | tee iac_checks.log
+          
+          if grep -q "FAIL" iac_checks.log; then
+            echo "ERROR: Fallos en verificación IaC. Deploy cancelado."
+            exit 1
+          fi
+
+      - name: Levantar servicios con Docker Compose
+        run: |
+          docker-compose up -d
+          sleep 10
+
+      - name: Ejecutar smoke tests
+        run: |
+          mkdir -p .evidence
+          
+          echo "=== Smoke Tests ===" | tee .evidence/deploy-log.txt
+          
+          echo "Test 1: GET /health" | tee -a .evidence/deploy-log.txt
+          curl -f http://localhost:8000/health | tee -a .evidence/deploy-log.txt || exit 1
+          echo "" | tee -a .evidence/deploy-log.txt
+          
+          echo "Test 2: GET /modules" | tee -a .evidence/deploy-log.txt
+          curl -f http://localhost:8000/modules | tee -a .evidence/deploy-log.txt || exit 1
+          echo "" | tee -a .evidence/deploy-log.txt
+
+      - name: Generar modules-summary.json
+        run: |
+          curl -s http://localhost:8000/modules | jq '{timestamp: now|todate, modules: .}' > .evidence/modules-summary.json
+          echo "" | tee -a .evidence/deploy-log.txt
+          echo "=== Módulos Summary ===" | tee -a .evidence/deploy-log.txt
+          cat .evidence/modules-summary.json | tee -a .evidence/deploy-log.txt
+
+      - name: Guardar artefactos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-evidence
+          path: |
+            .evidence/deploy-log.txt
+            .evidence/modules-summary.json
