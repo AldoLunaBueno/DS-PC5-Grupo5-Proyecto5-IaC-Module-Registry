@@ -90,3 +90,23 @@ Este repositorio implementa automatización del tablero Kanban usando el workflo
 **Notas:**
 - Las reglas y nombres de columnas están alineados con la Issue #2 del proyecto.
 - Para más detalles, ver el archivo `.github/workflows/kanban-automation.yml`.
+
+## Flujo de actualización de estados de calidad
+
+A grandes razgos el flujo es así:
+
+1. El workflow ejecuta validaciones y genera `.evidence/iac-quality-report.json`.
+2. La API lee el reporte y actualiza el campo `quality_state` de cada módulo.
+3. Los endpoints exponen este estado y permiten filtrado por calidad.
+
+El archivo `.evidence/iac-quality-report.json` es generado automáticamente por el workflow [`iac_quality.yml`](.github/workflows/iac_quality.yml) cuando se ejecuta en GitHub Actions. Este archivo contiene el estado de calidad de cada módulo IaC (OK, WARN, FAIL).
+
+La API lee este archivo (si existe) y expone el estado de calidad (`quality_state`) de cada módulo en los endpoints `/modules` y `/modules/{id}`.
+
+- Se puede filtrar por estado de calidad usando:
+  - `GET /modules?filter=quality_state:OK|WARN|FAIL`
+- Si el archivo no existe, el campo `quality_state` será `UNKNOWN` o el valor presente en el índice.
+
+
+
+
