@@ -1,6 +1,8 @@
 
 from typing import List, Optional
+
 from fastapi import APIRouter, HTTPException, Query
+
 from app.schemas import Module
 from app.services.metadata_loader import load_modules_with_quality
 

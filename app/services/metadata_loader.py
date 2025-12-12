@@ -1,6 +1,11 @@
+import json
+import os
+
+
 def load_modules_with_quality():
 	"""
-	Carga los módulos y les agrega el campo quality_state desde el reporte de calidad si existe.
+	Carga los módulos y les agrega el campo quality_state desde el reporte de calidad
+    si existe.
 	"""
 	data_file = os.path.join("data", "modules_index.json")
 	if not os.path.exists(data_file):
@@ -11,12 +16,12 @@ def load_modules_with_quality():
 	for m in modules:
 		m["quality_state"] = quality.get(m["id"], m.get("quality_state", "UNKNOWN"))
 	return modules
-import os
-import json
+
 
 def load_quality_states():
 	"""
-	Lee el archivo .evidence/iac-quality-report.json si existe y retorna un dict {module_id: result}.
+	Lee el archivo .evidence/iac-quality-report.json si existe y retorna un dict 
+    {module_id: result}.
 	Si no existe, retorna un dict vacío.
 	"""
 	path = ".evidence/iac-quality-report.json"

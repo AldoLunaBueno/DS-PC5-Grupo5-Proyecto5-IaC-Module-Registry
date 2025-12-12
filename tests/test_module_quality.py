@@ -1,9 +1,9 @@
-import os
 import json
-import shutil
-import tempfile
+import os
+
 import pytest
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 QUALITY_REPORT = {
