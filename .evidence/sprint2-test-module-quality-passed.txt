@@ -1,0 +1,13 @@
+(venv) aldolunab@ALDO:~/repos/DS-PC5-Grupo5-Proyecto5-IaC-Module-Registry$ pytest
+============================================== test session starts ===============================================
+platform linux -- Python 3.10.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /home/aldolunab/repos/DS-PC5-Grupo5-Proyecto5-IaC-Module-Registry
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.12.0
+collected 5 items                                                                                                
+
+tests/test_module_quality.py ..                                                                            [ 40%]
+tests/test_modules.py ...                                                                                  [100%]
+
+=============================================== 5 passed in 0.35s ================================================
