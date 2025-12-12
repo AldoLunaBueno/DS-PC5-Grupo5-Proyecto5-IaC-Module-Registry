@@ -1,0 +1,57 @@
+#0 building with "default" instance using docker driver
+
+#1 [registry internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.30kB 0.0s done
+#1 DONE 0.1s
+
+#2 [registry internal] load metadata for docker.io/library/python:3.10-slim
+#2 DONE 1.2s
+
+#3 [registry internal] load .dockerignore
+#3 transferring context: 155B 0.0s done
+#3 DONE 0.0s
+
+#4 [registry builder 1/5] FROM docker.io/library/python:3.10-slim@sha256:8769cc10045c67eac267537ff0950ce644eeebd9f0e88bec0604548a88f1f33d
+#4 DONE 0.0s
+
+#5 [registry internal] load build context
+#5 transferring context: 1.32kB 0.2s done
+#5 DONE 0.2s
+
+#6 [registry stage-1 3/6] RUN apt-get update && apt-get install -y --no-install-recommends curl &&     rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [registry stage-1 4/6] RUN groupadd -r appuser && useradd -r -g appuser appuser
+#7 CACHED
+
+#8 [registry builder 3/5] RUN apt-get update && apt-get install -y --no-install-recommends gcc
+#8 CACHED
+
+#9 [registry builder 5/5] RUN pip install --user --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [registry stage-1 5/6] COPY --from=builder /root/.local /home/appuser/.local
+#10 CACHED
+
+#11 [registry builder 4/5] COPY requirements.txt .
+#11 CACHED
+
+#12 [registry builder 2/5] WORKDIR /app
+#12 CACHED
+
+#13 [registry stage-1 6/6] COPY --chown=appuser:appuser . .
+#13 CACHED
+
+#14 [registry] exporting to image
+#14 exporting layers done
+#14 writing image sha256:9f6d0ed90f39ef841672462e858a8eef6f7baae7681e23f9553b3a569cc59cce done
+#14 naming to docker.io/library/ds-pc5-grupo5-proyecto5-iac-module-registry-registry done
+#14 DONE 0.0s
+
+#15 [registry] resolving provenance for metadata file
+#15 DONE 0.0s
+Attaching to registry-1
+registry-1  | INFO:     127.0.0.1:40954 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:48406 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:36866 - "GET /health HTTP/1.1" 200 OK
+registry-1  | INFO:     127.0.0.1:42642 - "GET /health HTTP/1.1" 200 OK

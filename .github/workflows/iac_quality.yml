@@ -1,0 +1,125 @@
+name: IaC Quality Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  iac-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+      
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      
+      - name: Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      
+      - name: Instalar TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      
+      - name: Instalar Kubeval
+        run: |
+          wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+          tar xf kubeval-linux-amd64.tar.gz
+          sudo mv kubeval /usr/local/bin
+      
+      - name: Instalar Conftest
+        run: |
+          wget https://github.com/open-policy-agent/conftest/releases/download/v0.54.0/conftest_0.54.0_Linux_x86_64.tar.gz
+          tar xzf conftest_0.54.0_Linux_x86_64.tar.gz
+          sudo mv conftest /usr/local/bin
+      
+      - name: Ejecutar verificaciones IaC
+        run: |
+          chmod +x tools/run_iac_checks.sh
+          tools/run_iac_checks.sh 2>&1 | tee iac_checks.log
+        continue-on-error: true
+      
+      - name: Parsear logs y construir reporte
+        run: |
+          mkdir -p .evidence
+          
+          echo '{"modules":[],"summary":{"ok":0,"warn":0,"fail":0}}' > .evidence/iac-quality-report.json
+          
+          ok=0
+          warn=0
+          fail=0
+          
+          # Revisar terraform
+          for f in .evidence/iac-checks/tf-validate-*.txt; do
+            [ -f "$f" ] || continue
+            mod=$(basename "$f" .txt | sed 's/tf-validate-//')
+            
+            if grep -qi error "$f"; then
+              status="FAIL"
+              fail=$((fail+1))
+              msg=$(grep -i error "$f" | head -1)
+            else
+              status="OK"
+              ok=$((ok+1))
+              msg="passed"
+            fi
+            
+            jq ".modules += [{\"id\":\"terraform/$mod\",\"type\":\"terraform\",\"result\":\"$status\",\"details\":\"$msg\"}]" \
+              .evidence/iac-quality-report.json > /tmp/report.json && mv /tmp/report.json .evidence/iac-quality-report.json
+          done
+          
+          # Revisar kubernetes
+          for f in .evidence/iac-checks/k8s-kubeval-*.txt; do
+            [ -f "$f" ] || continue
+            mod=$(basename "$f" .txt | sed 's/k8s-kubeval-//')
+            
+            if grep -q invalid "$f"; then
+              status="FAIL"
+              fail=$((fail+1))
+              msg=$(grep invalid "$f" | head -1)
+            else
+              status="OK"
+              ok=$((ok+1))
+              msg="passed"
+            fi
+            
+            jq ".modules += [{\"id\":\"k8s/$mod\",\"type\":\"kubernetes\",\"result\":\"$status\",\"details\":\"$msg\"}]" \
+              .evidence/iac-quality-report.json > /tmp/report.json && mv /tmp/report.json .evidence/iac-quality-report.json
+          done
+          
+          jq ".summary = {\"ok\":$ok,\"warn\":$warn,\"fail\":$fail}" .evidence/iac-quality-report.json > /tmp/report.json
+          mv /tmp/report.json .evidence/iac-quality-report.json
+          
+          cat .evidence/iac-quality-report.json
+      
+      - name: Subir reporte como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iac-quality-report
+          path: .evidence/iac-quality-report.json
+      
+      - name: Verificar fallos
+        run: |
+          if [ -f .evidence/iac-quality-report.json ]; then
+            fail_count=$(jq '.summary.fail' .evidence/iac-quality-report.json)
+            
+            if [ "$fail_count" -gt 0 ]; then
+              echo "ERROR: Se encontraron $fail_count módulo(s) con estado FAIL"
+              exit 1
+            fi
+            
+            echo "Verificación completada exitosamente"
+          else
+            echo "ERROR: No se pudo generar el reporte de calidad"
+            exit 1
+          fi

@@ -1,0 +1,15 @@
+.git
+.github
+.gitignore
+.evidence
+
+tests
+tools
+
+venv
+__pycache__
+
+*.md
+
+docker-compose.yml
+Dockerfile
