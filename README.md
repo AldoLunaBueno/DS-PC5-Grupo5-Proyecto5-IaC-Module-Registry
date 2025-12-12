@@ -66,6 +66,32 @@ Workflow que verifica la calidad de los módulos de infraestructura como código
 
 El pipeline falla automáticamente si `summary.fail > 0`.
 
+### Deploy + Smoke Tests
+Workflow que despliega la aplicación y ejecuta smoke tests.
+
+**Trigger:**
+- `workflow_dispatch` (manual)
+- Push a `main`
+
+**Dependencia:**
+- Verifica calidad IaC como prerequisito (ejecuta `tools/run_iac_checks.sh`)
+- Si hay fallos en IaC, el deploy se cancela
+
+**Proceso:**
+1. Verifica calidad IaC: ejecuta `tools/run_iac_checks.sh`
+2. Levanta servicios con `docker-compose up -d`
+3. Ejecuta smoke tests:
+   - `curl /health` - Verifica que la API está activa
+   - `curl /modules` - Verifica que se pueden obtener módulos
+4. Genera `modules-summary.json` con timestamp y estado actual de módulos
+5. Guarda evidencias en `.evidence/deploy-log.txt` y `.evidence/modules-summary.json`
+
+**Uso:**
+```bash
+# Trigger manual desde GitHub Actions
+# O automático en push a main
+```
+
 # Automatización Kanban (Projects v2)
 
 Este repositorio implementa automatización del tablero Kanban usando el workflow `.github/workflows/kanban-automation.yml` y GitHub Projects v2.
